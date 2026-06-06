@@ -448,7 +448,7 @@ async function loadKnowledgeLibrary() {
     const remoteGroups = await tryLoadRemoteKnowledge();
     if (remoteGroups) {
       renderKnowledgeLibrary(remoteGroups);
-      setSystemStatus("目前使用遠端 API 模式", "remote");
+      setSystemStatus("已連線到線上查詢服務", "remote");
       return;
     }
   } catch (error) {
@@ -456,7 +456,7 @@ async function loadKnowledgeLibrary() {
   }
 
   renderKnowledgeLibrary(groupKnowledge(LOCAL_KNOWLEDGE));
-  setSystemStatus("目前使用前端獨立模式", "local");
+  setSystemStatus("目前可直接在本頁查詢", "local");
 }
 
 async function initLiff() {
@@ -521,12 +521,12 @@ async function handleSubmit(event) {
     try {
       data = await submitToRemoteApi(payload);
       if (data) {
-        setSystemStatus("目前使用遠端 API 模式", "remote");
+        setSystemStatus("已連線到線上查詢服務", "remote");
       }
     } catch (remoteError) {
       console.warn("Remote submit unavailable, fallback to local analysis.", remoteError);
       data = buildLocalAnalysis(payload);
-      setSystemStatus("目前使用前端獨立模式", "local");
+      setSystemStatus("目前可直接在本頁查詢", "local");
     }
 
     showResult(data);

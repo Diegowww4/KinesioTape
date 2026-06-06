@@ -4,10 +4,6 @@ const errorBox = document.getElementById("errorBox");
 const resultSection = document.getElementById("resultSection");
 const knowledgeLibrary = document.getElementById("knowledgeLibrary");
 const systemStatus = document.getElementById("systemStatus");
-const dailyReminderTitle = document.getElementById("dailyReminderTitle");
-const dailyReminderDate = document.getElementById("dailyReminderDate");
-const dailyReminderBody = document.getElementById("dailyReminderBody");
-const dailyReminderList = document.getElementById("dailyReminderList");
 
 const resultTitle = document.getElementById("resultTitle");
 const resultSuggestion = document.getElementById("resultSuggestion");
@@ -21,49 +17,9 @@ const lineDisplayNameInput = document.getElementById("line_display_name");
 const config = window.APP_CONFIG || {};
 const apiBaseUrl = String(config.API_BASE_URL || "").trim().replace(/\/$/, "");
 const liffId = config.LIFF_ID || "";
-const siteUrl = config.SITE_URL || "https://diegowww4.github.io/KinesioTape/";
 
 const QUERY_REMINDER =
-  "本網站以貼紮查詢與教學參考為主，不提供正式醫療診斷。若症狀持續、加重，或出現危險訊號，請盡快就醫。";
-
-const DAILY_REMINDERS = [
-  {
-    title: "先查詢，再決定是否適合看貼紮教學",
-    body: `今天若要查詢貼紮內容，建議先打開網站 ${siteUrl}，確認安全提醒與症狀欄位，再往下查看相關教學。`,
-    points: [
-      "先確認是否有骨折、麻木、無力或無法行走。",
-      "再選擇疼痛部位、症狀描述與疼痛分數。",
-      "最後搭配影片查詢，不要只憑印象自行處理。"
-    ]
-  },
-  {
-    title: "急性疼痛時，查詢不等於治療",
-    body: `如果今天疼痛比平常更明顯，請先到 ${siteUrl} 查看安全提醒；高風險狀況應優先就醫，不要只依賴貼紮。`,
-    points: [
-      "疼痛分數很高時，不建議先自行貼紮。",
-      "若合併腫脹、劇痛或無法踩地，應優先休息與評估。",
-      "若有變形、流血或感染跡象，請直接就醫。"
-    ]
-  },
-  {
-    title: "看影片前先選對部位與症狀",
-    body: `建議先從 ${siteUrl} 選對部位與症狀，再看對應影片，避免看錯教學或選錯貼布類型。`,
-    points: [
-      "白貼偏固定，肌貼偏輔助與動作提醒。",
-      "同樣是腳踝不適，扭傷與恢復期查詢方向不同。",
-      "先分清楚是痠痛、拉傷、扭傷還是不穩。"
-    ]
-  },
-  {
-    title: "把網站當成查詢入口，而不是診斷工具",
-    body: `使用前請先到 ${siteUrl} 查詢常見內容，這個網站主要提供貼紮方向、注意事項與教學影片，不是正式醫療判斷系統。`,
-    points: [
-      "可快速整理常見部位與症狀的對應內容。",
-      "可搭配影片找到合適的教學方向。",
-      "若症狀超出一般查詢範圍，仍應由專業人員評估。"
-    ]
-  }
-];
+  "本網站以貼紮教學查詢為主，不提供正式醫療診斷。若症狀持續、加重，或出現危險訊號，請盡快就醫。";
 
 const LOCAL_KNOWLEDGE = [
   {
@@ -217,16 +173,6 @@ const QUERY_RULES = {
 
 const RISK_KEYWORDS = ["骨折", "不能走", "無法走", "動不了", "麻", "無力", "流血", "傷口", "變形", "劇痛", "胸痛", "呼吸困難", "昏倒", "感染"];
 
-function getTaipeiDate() {
-  return new Intl.DateTimeFormat("zh-TW", {
-    timeZone: "Asia/Taipei",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    weekday: "short"
-  }).format(new Date());
-}
-
 function setSystemStatus(message, kind = "local") {
   if (!systemStatus) {
     return;
@@ -234,20 +180,6 @@ function setSystemStatus(message, kind = "local") {
 
   systemStatus.textContent = message;
   systemStatus.dataset.kind = kind;
-}
-
-function renderDailyReminder() {
-  if (!dailyReminderTitle || !dailyReminderDate || !dailyReminderBody || !dailyReminderList) {
-    return;
-  }
-
-  const today = new Date();
-  const reminder = DAILY_REMINDERS[today.getDate() % DAILY_REMINDERS.length];
-
-  dailyReminderTitle.textContent = reminder.title;
-  dailyReminderDate.textContent = getTaipeiDate();
-  dailyReminderBody.textContent = reminder.body;
-  dailyReminderList.innerHTML = reminder.points.map((point) => `<li>${point}</li>`).join("");
 }
 
 function showError(message) {
@@ -275,8 +207,6 @@ function getBooleanValue(name) {
 
 function getFormData() {
   return {
-    name: form.elements.name.value.trim(),
-    age: form.elements.age.value ? Number(form.elements.age.value) : null,
     pain_area: form.elements.pain_area.value,
     pain_reason: form.elements.pain_reason.value,
     pain_level: form.elements.pain_level.value ? Number(form.elements.pain_level.value) : null,
@@ -538,6 +468,5 @@ async function handleSubmit(event) {
 }
 
 form.addEventListener("submit", handleSubmit);
-renderDailyReminder();
 initLiff();
 loadKnowledgeLibrary();

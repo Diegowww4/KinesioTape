@@ -39,31 +39,9 @@
       </p>
     </section>
 
-    <section class="card daily-reminder">
-      <div class="daily-reminder-header">
-        <div>
-          <p class="daily-label">Daily Reminder</p>
-          <h2 id="dailyReminderTitle">今日提醒載入中</h2>
-        </div>
-        <p id="dailyReminderDate" class="daily-date"></p>
-      </div>
-      <p id="dailyReminderBody" class="daily-body"></p>
-      <ul id="dailyReminderList" class="daily-list"></ul>
-    </section>
-
     <section class="card">
       <h2>症狀查詢表單</h2>
       <form id="consultationForm" class="form">
-        <div class="form-group">
-          <label for="name">姓名</label>
-          <input id="name" name="name" type="text" placeholder="可留空">
-        </div>
-
-        <div class="form-group">
-          <label for="age">年齡</label>
-          <input id="age" name="age" type="number" min="1" max="120" placeholder="可留空">
-        </div>
-
         <div class="form-group">
           <label for="pain_area">主要部位</label>
           <select id="pain_area" name="pain_area" required>
@@ -98,6 +76,7 @@
 
         <div class="form-group">
           <label for="pain_level">疼痛分數（1～10）</label>
+          <p class="field-note">`1` 代表輕微不適，`10` 代表非常劇烈、難以忍受的疼痛。</p>
           <input id="pain_level" name="pain_level" type="number" min="1" max="10" required>
         </div>
 

@@ -1,170 +1,304 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>肌貼與白貼教學助手</title>
-  <meta
-    name="description"
-    content="提供貼紮教學查詢、每日提醒、基本風險提醒與症狀表單分析的前端展示網站。"
-  >
-  <link rel="stylesheet" href="./style.css">
-</head>
-<body>
-  <script>
-    window.APP_CONFIG = {
-      API_BASE_URL: "",
-      LIFF_ID: "",
-      SITE_URL: "https://diegowww4.github.io/KinesioTape/"
-    };
-  </script>
+:root {
+  --bg: #f4f8f7;
+  --card: #ffffff;
+  --text: #17322c;
+  --muted: #5e746d;
+  --primary: #1f8f6b;
+  --primary-dark: #16684e;
+  --danger-bg: #fff2ef;
+  --danger-border: #ffb6a8;
+  --error-bg: #fff5f5;
+  --error-border: #ff8a8a;
+  --line: #d8e4df;
+  --shadow: 0 16px 40px rgba(25, 60, 50, 0.08);
+}
 
-  <div class="page">
-    <header class="hero">
-      <p class="eyebrow">kinesio-tape-line-helper</p>
-      <h1>肌貼與白貼教學助手</h1>
-      <p class="subtitle">
-        先用表單做初步判斷，再瀏覽貼紮教學影片。網站可獨立運作，也能在之後接回 LINE 與後端 API。
-      </p>
-      <p id="systemStatus" class="mode-chip">系統狀態載入中</p>
-    </header>
+* {
+  box-sizing: border-box;
+}
 
-    <section class="notice danger">
-      <h2>安全提醒</h2>
-      <p>
-        本系統僅供貼紮教學與初步參考，不提供正式醫療診斷，也不能取代醫師、物理治療師或防護員的專業判斷。
-      </p>
-      <p>
-        若出現骨折、不能走、無法走、動不了、麻、無力、流血、傷口、變形、劇痛、胸痛、呼吸困難、昏倒或感染，請直接就醫，不要先依賴貼紮處理。
-      </p>
-    </section>
+body {
+  margin: 0;
+  font-family: "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(31, 143, 107, 0.14), transparent 30%),
+    linear-gradient(180deg, #eef7f4 0%, var(--bg) 100%);
+  color: var(--text);
+}
 
-    <section class="card daily-reminder">
-      <div class="daily-reminder-header">
-        <div>
-          <p class="daily-label">Daily Reminder</p>
-          <h2 id="dailyReminderTitle">今日提醒載入中</h2>
-        </div>
-        <p id="dailyReminderDate" class="daily-date"></p>
-      </div>
-      <p id="dailyReminderBody" class="daily-body"></p>
-      <ul id="dailyReminderList" class="daily-list"></ul>
-    </section>
+.page {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
 
-    <section class="card">
-      <h2>症狀表單</h2>
-      <form id="consultationForm" class="form">
-        <div class="form-group">
-          <label for="name">姓名</label>
-          <input id="name" name="name" type="text" placeholder="可留空">
-        </div>
+.hero {
+  padding: 20px 4px 12px;
+}
 
-        <div class="form-group">
-          <label for="age">年齡</label>
-          <input id="age" name="age" type="number" min="1" max="120" placeholder="可留空">
-        </div>
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--primary-dark);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
 
-        <div class="form-group">
-          <label for="pain_area">主要部位</label>
-          <select id="pain_area" name="pain_area" required>
-            <option value="">請選擇</option>
-            <option value="肩頸">肩頸</option>
-            <option value="肩膀">肩膀</option>
-            <option value="手腕">手腕</option>
-            <option value="手指">手指</option>
-            <option value="下背">下背</option>
-            <option value="大腿">大腿</option>
-            <option value="小腿">小腿</option>
-            <option value="腳踝">腳踝</option>
-            <option value="足底">足底</option>
-          </select>
-        </div>
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.2;
+}
 
-        <div class="form-group">
-          <label for="pain_reason">症狀描述</label>
-          <select id="pain_reason" name="pain_reason" required>
-            <option value="">請選擇</option>
-            <option value="痠痛">痠痛</option>
-            <option value="拉傷">拉傷</option>
-            <option value="扭傷">扭傷</option>
-            <option value="挫傷">挫傷</option>
-            <option value="舉手會痛">舉手會痛</option>
-            <option value="走路會痛">走路會痛</option>
-            <option value="緊繃">緊繃</option>
-            <option value="不穩">不穩</option>
-            <option value="其他">其他</option>
-          </select>
-        </div>
+.subtitle {
+  margin-top: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+}
 
-        <div class="form-group">
-          <label for="pain_level">疼痛分數 pain_level（1～10）</label>
-          <input id="pain_level" name="pain_level" type="number" min="1" max="10" required>
-        </div>
+.mode-chip {
+  display: inline-flex;
+  margin-top: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  background: #e7f6ef;
+  color: var(--primary-dark);
+}
 
-        <div class="form-group checkbox-group">
-          <span>危險訊號</span>
-          <label><input type="checkbox" name="swelling"> 腫脹 swelling</label>
-          <label><input type="checkbox" name="bruise"> 瘀青 bruise</label>
-          <label><input type="checkbox" name="numbness"> 麻 numbness</label>
-          <label><input type="checkbox" name="weakness"> 無力 weakness</label>
-          <label><input type="checkbox" name="unable_to_walk"> 無法行走 unable_to_walk</label>
-          <label><input type="checkbox" name="wound"> 傷口 wound</label>
-          <label><input type="checkbox" name="suspected_fracture"> 疑似骨折 suspected_fracture</label>
-        </div>
+.mode-chip[data-kind="remote"] {
+  background: #e8f0ff;
+  color: #2754a6;
+}
 
-        <div class="form-group">
-          <label for="duration">持續時間</label>
-          <input id="duration" name="duration" type="text" placeholder="例如：2 天、1 週">
-        </div>
+.daily-reminder {
+  background: linear-gradient(135deg, #f8fff6 0%, #effaf5 100%);
+  border-color: #cde8d9;
+}
 
-        <input id="line_user_id" name="line_user_id" type="hidden">
-        <input id="line_display_name" name="line_display_name" type="hidden">
+.daily-reminder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
 
-        <button id="submitButton" type="submit" class="submit-button">送出查詢</button>
-      </form>
-    </section>
+.daily-label {
+  margin: 0 0 6px;
+  color: var(--primary-dark);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
-    <section id="errorBox" class="notice error hidden"></section>
+.daily-date {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
 
-    <section id="resultSection" class="card hidden">
-      <h2>分析結果</h2>
-      <div class="result-grid">
-        <div class="result-item">
-          <h3>判斷摘要</h3>
-          <p id="resultTitle">-</p>
-          <p id="resultSuggestion">-</p>
-        </div>
-        <div class="result-item">
-          <h3>貼紮建議</h3>
-          <p id="resultTapeMethod">-</p>
-        </div>
-        <div class="result-item">
-          <h3>注意事項</h3>
-          <p id="resultWarning">-</p>
-        </div>
-        <div class="result-item">
-          <h3>建議科別</h3>
-          <p id="resultDepartment">-</p>
-        </div>
-      </div>
-    </section>
+.daily-body {
+  margin: 12px 0 0;
+  line-height: 1.7;
+}
 
-    <section class="card">
-      <div class="library-heading">
-        <div>
-          <h2>貼紮教學影片</h2>
-          <p class="section-note">
-            依大部位分類整理，方便先看有哪些教學，再回到 LINE 用更精準的關鍵字查詢。
-          </p>
-        </div>
-      </div>
-      <div id="knowledgeLibrary" class="knowledge-library">
-        <p class="section-note">載入影片資料中...</p>
-      </div>
-    </section>
-  </div>
+.daily-list {
+  margin: 14px 0 0;
+  padding-left: 20px;
+  color: var(--text);
+  line-height: 1.7;
+}
 
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <script src="./app.js"></script>
-</body>
-</html>
+.card,
+.notice {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-top: 18px;
+}
+
+.danger {
+  background: var(--danger-bg);
+  border-color: var(--danger-border);
+}
+
+.error {
+  background: var(--error-bg);
+  border-color: var(--error-border);
+  color: #8e1e1e;
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
+label,
+.form-group span {
+  font-weight: 600;
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #c7d7d1;
+  background: #fff;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid rgba(31, 143, 107, 0.25);
+  border-color: var(--primary);
+}
+
+.checkbox-group {
+  padding: 14px;
+  border: 1px solid #d6e2dd;
+  border-radius: 16px;
+  background: #f8fbfa;
+}
+
+.checkbox-group label {
+  display: block;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.submit-button {
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary) 0%, #2aa47d 100%);
+  color: #fff;
+  padding: 14px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.submit-button:hover {
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.result-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.result-item {
+  border: 1px solid #dce7e2;
+  border-radius: 16px;
+  padding: 16px;
+  background: #fcfefd;
+}
+
+.result-item h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.result-item p {
+  margin: 0;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.section-note {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.knowledge-library {
+  display: grid;
+  gap: 20px;
+}
+
+.library-group h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.video-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.video-card {
+  border: 1px solid #dce7e2;
+  border-radius: 16px;
+  padding: 16px;
+  background: #fcfefd;
+}
+
+.video-card h3 {
+  margin: 6px 0 8px;
+}
+
+.video-card p {
+  margin: 0 0 8px;
+  line-height: 1.6;
+}
+
+.video-type {
+  color: var(--primary-dark);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.video-desc {
+  color: var(--muted);
+}
+
+.video-card a {
+  color: var(--primary-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.video-card a:hover {
+  text-decoration: underline;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding-top: 36px;
+  }
+
+  .result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .video-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

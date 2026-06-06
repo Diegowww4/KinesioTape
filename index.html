@@ -6,7 +6,7 @@
   <title>肌貼與白貼教學助手</title>
   <meta
     name="description"
-    content="提供貼紮教學查詢、基本風險提醒與症狀表單分析的前端展示網站。"
+    content="提供貼紮教學查詢、每日提醒、基本風險提醒與症狀表單分析的前端展示網站。"
   >
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -14,7 +14,8 @@
   <script>
     window.APP_CONFIG = {
       API_BASE_URL: "",
-      LIFF_ID: ""
+      LIFF_ID: "",
+      SITE_URL: "https://diegowww4.github.io/KinesioTape/"
     };
   </script>
 
@@ -23,7 +24,7 @@
       <p class="eyebrow">kinesio-tape-line-helper</p>
       <h1>肌貼與白貼教學助手</h1>
       <p class="subtitle">
-        先用表單做初步判斷，再瀏覽貼紮教學影片。這個網站可獨立運作，也能在未來接回 LINE 與後端 API。
+        先用表單做初步判斷，再瀏覽貼紮教學影片。網站可獨立運作，也能在之後接回 LINE 與後端 API。
       </p>
       <p id="systemStatus" class="mode-chip">系統狀態載入中</p>
     </header>
@@ -36,6 +37,18 @@
       <p>
         若出現骨折、不能走、無法走、動不了、麻、無力、流血、傷口、變形、劇痛、胸痛、呼吸困難、昏倒或感染，請直接就醫，不要先依賴貼紮處理。
       </p>
+    </section>
+
+    <section class="card daily-reminder">
+      <div class="daily-reminder-header">
+        <div>
+          <p class="daily-label">Daily Reminder</p>
+          <h2 id="dailyReminderTitle">今日提醒載入中</h2>
+        </div>
+        <p id="dailyReminderDate" class="daily-date"></p>
+      </div>
+      <p id="dailyReminderBody" class="daily-body"></p>
+      <ul id="dailyReminderList" class="daily-list"></ul>
     </section>
 
     <section class="card">

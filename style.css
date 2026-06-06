@@ -104,6 +104,13 @@ h1 {
   gap: 8px;
 }
 
+.field-note {
+  margin: -2px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
 label,
 .form-group span {
   font-weight: 600;

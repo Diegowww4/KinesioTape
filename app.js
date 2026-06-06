@@ -4,6 +4,10 @@ const errorBox = document.getElementById("errorBox");
 const resultSection = document.getElementById("resultSection");
 const knowledgeLibrary = document.getElementById("knowledgeLibrary");
 const systemStatus = document.getElementById("systemStatus");
+const dailyReminderTitle = document.getElementById("dailyReminderTitle");
+const dailyReminderDate = document.getElementById("dailyReminderDate");
+const dailyReminderBody = document.getElementById("dailyReminderBody");
+const dailyReminderList = document.getElementById("dailyReminderList");
 
 const resultTitle = document.getElementById("resultTitle");
 const resultSuggestion = document.getElementById("resultSuggestion");
@@ -17,120 +21,140 @@ const lineDisplayNameInput = document.getElementById("line_display_name");
 const config = window.APP_CONFIG || {};
 const apiBaseUrl = String(config.API_BASE_URL || "").trim().replace(/\/$/, "");
 const liffId = config.LIFF_ID || "";
+const siteUrl = config.SITE_URL || "https://diegowww4.github.io/KinesioTape/";
 
 const MEDICAL_REMINDER =
   "本系統僅供貼紮教學與初步參考，不提供正式醫療診斷。如症狀持續、加重，或出現危險訊號，請盡快就醫。";
 
+const DAILY_REMINDERS = [
+  {
+    title: "先看提醒，再做貼紮判斷",
+    body: `今天若要查詢貼紮方式，請先打開網站 ${siteUrl}，確認安全提醒與症狀表單，再決定是否繼續貼紮。`,
+    points: [
+      "先確認是否有骨折、麻木、無力或無法行走。",
+      "再填寫疼痛部位、症狀描述與疼痛分數。",
+      "最後搭配影片查詢，不要只憑印象自行處理。"
+    ]
+  },
+  {
+    title: "急性疼痛不要只靠貼布",
+    body: `若今天疼痛比昨天更明顯，請先到網站 ${siteUrl} 查看安全提醒；高風險狀況應優先就醫，不要只依賴貼紮。`,
+    points: [
+      "疼痛 8 分以上通常不適合先自行貼紮。",
+      "有腫脹合併劇痛時，先休息與觀察更重要。",
+      "若有變形、流血或感染跡象，請直接就醫。"
+    ]
+  },
+  {
+    title: "看影片前先確認貼紮目標",
+    body: `今天建議先從網站 ${siteUrl} 選擇正確部位，再看對應影片，避免貼錯位置或選錯貼布類型。`,
+    points: [
+      "白貼較偏固定，肌貼較偏輔助與動作提醒。",
+      "同樣是腳踝不適，急性扭傷與恢復期貼法不同。",
+      "先分清楚是痠痛、拉傷、扭傷還是不穩。"
+    ]
+  },
+  {
+    title: "每天查詢前先做自我檢查",
+    body: `使用前請先打開 ${siteUrl} 做一次快速檢查，確認今天的症狀是否比昨天更嚴重，避免錯把醫療問題當成一般貼紮問題。`,
+    points: [
+      "活動範圍是否明顯變差。",
+      "腫脹或瘀青是否比昨天更明顯。",
+      "是否開始出現麻、無力、踩地痛或夜間痛。"
+    ]
+  }
+];
+
 const LOCAL_KNOWLEDGE = [
   {
-    id: "neck-trapezius",
     category: "肩頸與肩膀",
     subPart: "肩頸",
     tapingType: "肌貼",
     title: "肩頸緊繃放鬆貼法",
     purpose: "協助肩頸緊繃與久坐痠痛時的基本支撐與放鬆。",
-    description: "適合長時間久坐、姿勢不良或訓練後的肩頸緊繃情況，貼紮前仍須確認沒有麻木、無力或劇痛。",
+    description: "適合長時間久坐、姿勢不良或訓練後的肩頸緊繃情況。",
     videoUrl: "https://youtube.com/shorts/YGo2BwNPQqQ?si=XrauyhpAb0uyydqT",
-    keywords: ["肩頸", "痠痛", "緊繃", "斜方肌", "肩膀緊"]
+    keywords: ["肩頸", "痠痛", "緊繃"]
   },
   {
-    id: "shoulder-stability",
     category: "肩頸與肩膀",
     subPart: "肩膀",
     tapingType: "肌貼",
     title: "肩膀穩定貼法",
     purpose: "提供肩膀活動時的穩定感與動作提醒。",
-    description: "適合肩膀不穩、活動時有拉扯感的人，若舉手劇痛或懷疑脫位應先就醫。",
+    description: "適合肩膀不穩、活動時有拉扯感的人。",
     videoUrl: "https://youtube.com/shorts/MQSEO5xe6QU?si=TpwMwenvEV71lWkf",
-    keywords: ["肩膀", "不穩", "舉手會痛", "穩定", "肩關節"]
+    keywords: ["肩膀", "不穩", "舉手會痛"]
   },
   {
-    id: "wrist-support",
     category: "手腕與手指",
     subPart: "手腕",
     tapingType: "白貼",
     title: "手腕固定貼法",
     purpose: "減少手腕過度活動，提供較直接的固定支撐。",
-    description: "較適合急性期或需要較高穩定度的情況，若有腫脹明顯、麻木或變形不建議自行貼紮。",
+    description: "較適合急性期或需要較高穩定度的情況。",
     videoUrl: "https://youtu.be/vLVX8Am9McQ?si=kLk61yw5OZQFoZzp",
-    keywords: ["手腕", "扭傷", "不穩", "固定", "白貼"]
+    keywords: ["手腕", "扭傷", "不穩"]
   },
   {
-    id: "finger-support",
     category: "手腕與手指",
     subPart: "手指",
     tapingType: "白貼",
     title: "手指挫傷固定貼法",
     purpose: "提供手指挫傷或戳傷後的保護與固定。",
-    description: "常見於球類運動後手指撞擊不適，若懷疑骨折或關節變形，應先就醫檢查。",
+    description: "常見於球類運動後手指撞擊不適。",
     videoUrl: "https://youtu.be/O3BLtpWi-3A?si=ljQR4nTPZPoU_4t7",
-    keywords: ["手指", "挫傷", "扭傷", "戳傷", "固定"]
+    keywords: ["手指", "挫傷", "扭傷"]
   },
   {
-    id: "low-back-pain",
     category: "軀幹",
     subPart: "下背",
     tapingType: "肌貼",
     title: "下背痠痛貼法",
     purpose: "協助下背肌群支撐，減少日常活動時的不適感。",
-    description: "適合一般肌肉痠痛或訓練後緊繃，不適合伴隨腿麻、無力或突發劇痛的情況。",
+    description: "適合一般肌肉痠痛或訓練後緊繃。",
     videoUrl: "https://youtube.com/shorts/NqpK5xGie5w?si=jdOu1uPjF9kNJSbo",
-    keywords: ["下背", "痠痛", "緊繃", "腰", "下背痛"]
+    keywords: ["下背", "痠痛", "緊繃"]
   },
   {
-    id: "thigh-strain",
     category: "腿部",
     subPart: "大腿",
     tapingType: "肌貼",
     title: "大腿拉傷貼法",
     purpose: "協助大腿肌肉拉傷後的支撐與動作保護。",
-    description: "適合運動後拉扯感或局部痠痛，若瘀青快速擴大或疼痛過強，建議先暫停活動並就醫。",
+    description: "適合運動後拉扯感或局部痠痛。",
     videoUrl: "https://youtube.com/shorts/VSrnONiM7lQ?si=O_IPmQe_OmqWMuk8",
-    keywords: ["大腿", "拉傷", "痠痛", "運動傷害"]
+    keywords: ["大腿", "拉傷", "痠痛"]
   },
   {
-    id: "calf-strain",
     category: "腿部",
     subPart: "小腿",
     tapingType: "肌貼",
     title: "小腿拉傷貼法",
     purpose: "降低小腿活動時的不適感並提供肌肉支撐。",
-    description: "適合小腿拉傷、緊繃或跑步後不適，若合併紅腫熱痛或走路困難，應優先就醫。",
+    description: "適合小腿拉傷、緊繃或跑步後不適。",
     videoUrl: "https://youtube.com/shorts/McUE1MpXLao?si=HBn4kHBForda-9z6",
-    keywords: ["小腿", "拉傷", "痠痛", "緊繃", "跑步"]
+    keywords: ["小腿", "拉傷", "痠痛"]
   },
   {
-    id: "ankle-white-tape",
     category: "腳踝與足底",
     subPart: "腳踝",
     tapingType: "白貼",
     title: "腳踝扭傷固定貼法",
     purpose: "提供腳踝扭傷後較高的固定與保護。",
-    description: "適合急性扭傷後需要較高穩定度的情況，若無法行走、懷疑骨折或腫脹劇烈，不應自行處理。",
+    description: "適合急性扭傷後需要較高穩定度的情況。",
     videoUrl: "https://youtu.be/Tj3HhyfAP_w?si=5E7CKjUL_Zroy56d",
-    keywords: ["腳踝", "扭傷", "走路會痛", "白貼", "固定"]
+    keywords: ["腳踝", "扭傷", "走路會痛"]
   },
   {
-    id: "ankle-kinesio",
-    category: "腳踝與足底",
-    subPart: "腳踝",
-    tapingType: "肌貼",
-    title: "腳踝穩定肌貼",
-    purpose: "提供腳踝活動時的輔助穩定與動作提醒。",
-    description: "適合輕中度不穩或恢復期使用，若仍有明顯腫脹或踩地劇痛，請先休息與評估。",
-    videoUrl: "https://youtube.com/shorts/aN0EDbw8z-Y?si=G09xjoBOvw6bcm5p",
-    keywords: ["腳踝", "不穩", "肌貼", "穩定", "扭傷恢復"]
-  },
-  {
-    id: "plantar-support",
     category: "腳踝與足底",
     subPart: "足底",
     tapingType: "肌貼",
     title: "足底支撐貼法",
     purpose: "協助足底不適、足弓疲勞或長時間站立後的支撐。",
-    description: "適合足底痠痛與支撐需求，若伴隨明顯腫脹、外傷或無法踩地，應先就醫。",
+    description: "適合足底痠痛與支撐需求。",
     videoUrl: "https://youtube.com/shorts/7mVS3dd7o2E?si=HBXy4xDiKl0ryfkP",
-    keywords: ["足底", "痠痛", "足弓", "站久", "支撐"]
+    keywords: ["足底", "痠痛", "足弓"]
   }
 ];
 
@@ -193,6 +217,16 @@ const RULES = {
 
 const URGENT_KEYWORDS = ["骨折", "不能走", "無法走", "動不了", "麻", "無力", "流血", "傷口", "變形", "劇痛", "胸痛", "呼吸困難", "昏倒", "感染"];
 
+function getTaipeiDate() {
+  return new Intl.DateTimeFormat("zh-TW", {
+    timeZone: "Asia/Taipei",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    weekday: "short"
+  }).format(new Date());
+}
+
 function setSystemStatus(message, kind = "local") {
   if (!systemStatus) {
     return;
@@ -200,6 +234,22 @@ function setSystemStatus(message, kind = "local") {
 
   systemStatus.textContent = message;
   systemStatus.dataset.kind = kind;
+}
+
+function renderDailyReminder() {
+  if (!dailyReminderTitle || !dailyReminderDate || !dailyReminderBody || !dailyReminderList) {
+    return;
+  }
+
+  const today = new Date();
+  const reminder = DAILY_REMINDERS[today.getDate() % DAILY_REMINDERS.length];
+
+  dailyReminderTitle.textContent = reminder.title;
+  dailyReminderDate.textContent = getTaipeiDate();
+  dailyReminderBody.textContent = reminder.body;
+  dailyReminderList.innerHTML = reminder.points
+    .map((point) => `<li>${point}</li>`)
+    .join("");
 }
 
 function showError(message) {
@@ -490,5 +540,6 @@ async function handleSubmit(event) {
 }
 
 form.addEventListener("submit", handleSubmit);
+renderDailyReminder();
 initLiff();
 loadKnowledgeLibrary();

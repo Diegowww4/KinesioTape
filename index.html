@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>肌貼與白貼教學助手</title>
+  <title>肌貼與白貼查詢助手</title>
   <meta
     name="description"
-    content="提供貼紮教學查詢、每日提醒、基本風險提醒與症狀表單分析的前端展示網站。"
+    content="提供常見症狀對應的貼紮查詢、注意事項、安全提醒與教學影片。"
   >
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -22,20 +22,20 @@
   <div class="page">
     <header class="hero">
       <p class="eyebrow">kinesio-tape-line-helper</p>
-      <h1>肌貼與白貼教學助手</h1>
+      <h1>肌貼與白貼查詢助手</h1>
       <p class="subtitle">
-        可先透過表單查詢常見症狀與貼紮建議，再搭配下方教學影片快速找到對應內容。
+        透過部位與症狀快速查詢常見貼紮方向、注意事項與教學影片，幫助使用者更快找到相關內容。
       </p>
-      <p id="systemStatus" class="mode-chip">系統狀態載入中</p>
+      <p id="systemStatus" class="mode-chip">查詢模式載入中</p>
     </header>
 
     <section class="notice danger">
       <h2>安全提醒</h2>
       <p>
-        本系統僅供貼紮教學與初步參考，不提供正式醫療診斷，也不能取代醫師、物理治療師或防護員的專業判斷。
+        本網站以貼紮教學查詢為主，不提供正式醫療診斷，也不能取代醫師、物理治療師或防護員的專業判斷。
       </p>
       <p>
-        若出現骨折、不能走、無法走、動不了、麻、無力、流血、傷口、變形、劇痛、胸痛、呼吸困難、昏倒或感染，請直接就醫，不要先依賴貼紮處理。
+        若出現骨折、無法行走、麻木、無力、流血、傷口、變形、劇痛、胸痛、呼吸困難、昏倒或感染，請直接就醫，不要先依賴貼紮處理。
       </p>
     </section>
 
@@ -52,7 +52,7 @@
     </section>
 
     <section class="card">
-      <h2>症狀表單</h2>
+      <h2>症狀查詢表單</h2>
       <form id="consultationForm" class="form">
         <div class="form-group">
           <label for="name">姓名</label>
@@ -97,19 +97,19 @@
         </div>
 
         <div class="form-group">
-          <label for="pain_level">疼痛分數 pain_level（1～10）</label>
+          <label for="pain_level">疼痛分數（1～10）</label>
           <input id="pain_level" name="pain_level" type="number" min="1" max="10" required>
         </div>
 
         <div class="form-group checkbox-group">
           <span>危險訊號</span>
-          <label><input type="checkbox" name="swelling"> 腫脹 swelling</label>
-          <label><input type="checkbox" name="bruise"> 瘀青 bruise</label>
-          <label><input type="checkbox" name="numbness"> 麻 numbness</label>
-          <label><input type="checkbox" name="weakness"> 無力 weakness</label>
-          <label><input type="checkbox" name="unable_to_walk"> 無法行走 unable_to_walk</label>
-          <label><input type="checkbox" name="wound"> 傷口 wound</label>
-          <label><input type="checkbox" name="suspected_fracture"> 疑似骨折 suspected_fracture</label>
+          <label><input type="checkbox" name="swelling"> 腫脹</label>
+          <label><input type="checkbox" name="bruise"> 瘀青</label>
+          <label><input type="checkbox" name="numbness"> 麻木</label>
+          <label><input type="checkbox" name="weakness"> 無力</label>
+          <label><input type="checkbox" name="unable_to_walk"> 無法行走</label>
+          <label><input type="checkbox" name="wound"> 傷口</label>
+          <label><input type="checkbox" name="suspected_fracture"> 疑似骨折</label>
         </div>
 
         <div class="form-group">
@@ -127,15 +127,15 @@
     <section id="errorBox" class="notice error hidden"></section>
 
     <section id="resultSection" class="card hidden">
-      <h2>分析結果</h2>
+      <h2>查詢結果</h2>
       <div class="result-grid">
         <div class="result-item">
-          <h3>判斷摘要</h3>
+          <h3>查詢摘要</h3>
           <p id="resultTitle">-</p>
           <p id="resultSuggestion">-</p>
         </div>
         <div class="result-item">
-          <h3>貼紮建議</h3>
+          <h3>貼紮方向</h3>
           <p id="resultTapeMethod">-</p>
         </div>
         <div class="result-item">
@@ -143,7 +143,7 @@
           <p id="resultWarning">-</p>
         </div>
         <div class="result-item">
-          <h3>建議科別</h3>
+          <h3>建議就醫方向</h3>
           <p id="resultDepartment">-</p>
         </div>
       </div>
@@ -154,7 +154,7 @@
         <div>
           <h2>貼紮教學影片</h2>
           <p class="section-note">
-            依大部位分類整理，方便先看有哪些教學，再回到 LINE 用更精準的關鍵字查詢。
+            依大部位分類整理，方便先查詢常見情況，再搭配影片找到對應教學內容。
           </p>
         </div>
       </div>
